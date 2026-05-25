@@ -1,6 +1,6 @@
 "use strict";
 
-const STORE_KEY = "luisPlusPremiumPlaybook.v3";
+const STORE_KEY = "luisPlusPremiumPlaybook.v4";
 
 const months = [
   "Январь",
@@ -33,8 +33,6 @@ const defaultState = {
   showNet: true,
   baseSalary: 75000,
   meals: 11000,
-  salaryTaxed: true,
-  mealsTaxed: false,
   quarterPlans: [
     { pdzPlan: 1.8, stmPlan: 1.49 },
     { pdzPlan: 1.6, stmPlan: 2 },
@@ -66,8 +64,6 @@ const els = {
   showNet: document.querySelector("#showNet"),
   baseSalary: document.querySelector("#baseSalary"),
   meals: document.querySelector("#meals"),
-  salaryTaxed: document.querySelector("#salaryTaxed"),
-  mealsTaxed: document.querySelector("#mealsTaxed"),
   quarterSettings: document.querySelector("#quarterSettings"),
   monthRows: document.querySelector("#monthRows"),
   salaryTotal: document.querySelector("#salaryTotal"),
@@ -210,9 +206,7 @@ function fixedMonthlyGross() {
 }
 
 function fixedMonthlyNet() {
-  const salary = toNumber(state.baseSalary);
-  const meals = toNumber(state.meals);
-  return (state.salaryTaxed ? salary * 0.87 : salary) + (state.mealsTaxed ? meals * 0.87 : meals);
+  return fixedMonthlyGross();
 }
 
 function displayFixedMonthly() {
@@ -291,8 +285,6 @@ function render() {
   els.showNet.checked = state.showNet;
   els.baseSalary.value = String(state.baseSalary).replace(".", ",");
   els.meals.value = String(state.meals).replace(".", ",");
-  els.salaryTaxed.checked = state.salaryTaxed;
-  els.mealsTaxed.checked = state.mealsTaxed;
   els.rateChip.textContent = `${formatNumber((gradeRates[state.grade] || gradeRates[1]) * 100, 2)}%`;
   els.modeChip.textContent = baseModeLabel();
   renderQuarterSettings();
@@ -387,7 +379,7 @@ function renderTotals() {
   els.totalGross.textContent = formatRub(premiumDisplayTotal, state.showNet ? 2 : 0);
   els.totalNet.textContent = state.showNet ? `${formatRub(total)} gross` : "НДФЛ скрыт";
   els.fixedMonthly.textContent = formatRub(fixedDisplayMonthly, state.showNet ? 2 : 0);
-  els.fixedMonthlyHint.textContent = state.showNet ? `${formatRub(fixedMonthlyGross())} gross` : "до удержаний";
+  els.fixedMonthlyHint.textContent = state.showNet ? "уже после НДФЛ" : "фиксированная часть";
   els.lastMonthGross.textContent = last ? formatRub(lastSalaryDisplay, state.showNet ? 2 : 0) : "0 ₽";
   els.lastMonthName.textContent = last ? `${months[last.index]}: фикс + премия` : "—";
   renderDigest(results);
@@ -542,16 +534,6 @@ function bindEvents() {
 
   els.meals.addEventListener("input", () => {
     state.meals = toNumber(els.meals.value);
-    saveAndRender();
-  });
-
-  els.salaryTaxed.addEventListener("change", () => {
-    state.salaryTaxed = els.salaryTaxed.checked;
-    saveAndRender();
-  });
-
-  els.mealsTaxed.addEventListener("change", () => {
-    state.mealsTaxed = els.mealsTaxed.checked;
     saveAndRender();
   });
 

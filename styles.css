@@ -191,10 +191,37 @@ h2 {
 
 .salary-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
   align-items: end;
   margin-top: 10px;
+}
+
+.pay-note {
+  min-height: 56px;
+  border: 1px solid rgba(118, 191, 103, 0.38);
+  border-radius: var(--radius);
+  padding: 9px 12px;
+  background: rgba(118, 191, 103, 0.12);
+}
+
+.pay-note strong,
+.pay-note span {
+  display: block;
+}
+
+.pay-note strong {
+  font-family: "Commissioner", "Onest", sans-serif;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.pay-note span {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 750;
+  text-transform: uppercase;
 }
 
 .field {
