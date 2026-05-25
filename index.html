@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Luis+ | Калькулятор премии</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Luis+ performance paybook</p>
+          <h1>Калькулятор премии МП</h1>
+        </div>
+        <div class="top-actions">
+          <button class="ghost-button" id="presetScreens">Данные со скринов</button>
+          <button class="ghost-button" id="presetFull">100% месяц</button>
+          <button class="danger-button" id="resetData">Сброс</button>
+        </div>
+      </header>
+
+      <section class="summary-grid" aria-label="Итоги расчёта">
+        <article class="metric-tile primary">
+          <span>К начислению</span>
+          <strong id="totalGross">0 ₽</strong>
+          <small id="totalNet">0 ₽ после НДФЛ</small>
+        </article>
+        <article class="metric-tile">
+          <span>Последний месяц</span>
+          <strong id="lastMonthGross">0 ₽</strong>
+          <small id="lastMonthName">—</small>
+        </article>
+        <article class="metric-tile">
+          <span>Квартальный пересчёт</span>
+          <strong id="quarterGross">0 ₽</strong>
+          <small>Платится отдельно</small>
+        </article>
+        <article class="metric-tile accent">
+          <span>Главный стоп-фактор</span>
+          <strong id="mainDrag">—</strong>
+          <small id="mainDragHint">—</small>
+        </article>
+      </section>
+
+      <section class="control-panel" aria-label="Настройки модели">
+        <div class="field">
+          <label for="grade">Грейд</label>
+          <select id="grade">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+          </select>
+        </div>
+
+        <div class="field wide">
+          <label for="baseMode">База премии</label>
+          <select id="baseMode">
+            <option value="cashMargin">Д/С факт × рентабельность 6М</option>
+            <option value="grossProfit">Фактическая валовая прибыль</option>
+            <option value="fixed">Фиксированная база</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="fixedBase">Фикс. база, млн ₽</label>
+          <input id="fixedBase" type="text" inputmode="decimal" value="4" />
+        </div>
+
+        <label class="toggle-line" title="Показывает ориентир после удержания НДФЛ 13%">
+          <input id="showNet" type="checkbox" checked />
+          <span>НДФЛ 13%</span>
+        </label>
+      </section>
+
+      <section class="kpi-panel" aria-label="Планы KPI">
+        <div class="kpi-title">Планы KPI по кварталам</div>
+        <div class="quarter-grid" id="quarterSettings"></div>
+      </section>
+
+      <section class="table-panel" aria-label="Расчёт по месяцам">
+        <div class="table-heading">
+          <div>
+            <p class="eyebrow">Ввод</p>
+            <h2>Месяцы и показатели</h2>
+          </div>
+          <div class="rate-chip" id="rateChip">2,95%</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Месяц</th>
+                <th>Учитывать</th>
+                <th>План ВП, млн</th>
+                <th>Факт ВП, млн</th>
+                <th>Д/С факт, млн</th>
+                <th>Рент. 6М, %</th>
+                <th>ПДЗ, млн</th>
+                <th>Отгрузки 12М, млн</th>
+                <th>СТМ</th>
+                <th>Спецзадача</th>
+                <th>Коэф. ВП</th>
+                <th>Коэф. ПДЗ</th>
+                <th>Коэф. СТМ</th>
+                <th>Премия</th>
+              </tr>
+            </thead>
+            <tbody id="monthRows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="detail-grid" aria-label="Детали расчёта">
+        <article class="detail-block">
+          <h2>Разбор по KPI</h2>
+          <div id="kpiBreakdown" class="breakdown"></div>
+        </article>
+        <article class="detail-block">
+          <h2>Формула</h2>
+          <div class="formula">
+            <span>База</span>
+            <span>×</span>
+            <span>% грейда</span>
+            <span>×</span>
+            <span>взвешенный KPI</span>
+            <span>×</span>
+            <span>спецзадача</span>
+          </div>
+          <p class="note">
+            Веса из Excel: ВП — 80%, ПДЗ — 10%, СТМ — 10%.
+          </p>
+        </article>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
