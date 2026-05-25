@@ -70,6 +70,8 @@ const els = {
   mainDrag: document.querySelector("#mainDrag"),
   mainDragHint: document.querySelector("#mainDragHint"),
   rateChip: document.querySelector("#rateChip"),
+  modeChip: document.querySelector("#modeChip"),
+  monthDigest: document.querySelector("#monthDigest"),
   kpiBreakdown: document.querySelector("#kpiBreakdown"),
   presetScreens: document.querySelector("#presetScreens"),
   presetFull: document.querySelector("#presetFull"),
@@ -261,6 +263,7 @@ function render() {
   els.fixedBase.value = String(state.fixedBase).replace(".", ",");
   els.showNet.checked = state.showNet;
   els.rateChip.textContent = `${formatNumber((gradeRates[state.grade] || gradeRates[1]) * 100, 2)}%`;
+  els.modeChip.textContent = baseModeLabel();
   renderQuarterSettings();
   renderRows();
   renderTotals();
@@ -344,8 +347,73 @@ function renderTotals() {
   els.quarterGross.textContent = formatRub(quarterTotal);
   els.lastMonthGross.textContent = last ? formatRub(last.afterTask + last.quarterAdjustment) : "0 ₽";
   els.lastMonthName.textContent = last ? months[last.index] : "—";
+  renderDigest(results);
   renderDrag(activeResults);
   renderBreakdown(activeResults, monthlyTotal, quarterTotal);
+}
+
+function baseModeLabel() {
+  if (state.baseMode === "grossProfit") return "База = фактическая валовая прибыль";
+  if (state.baseMode === "fixed") return `База = ${formatNumber(toNumber(state.fixedBase), 2)} млн ₽ в месяц`;
+  return "База = Д/С факт × рентабельность 6М";
+}
+
+function renderDigest(results) {
+  els.monthDigest.innerHTML = state.rows
+    .map((rowData, index) => {
+      const result = results[index];
+      const total = result.afterTask + result.quarterAdjustment;
+      const taskText = rowData.specialDone ? "спецзадача выполнена" : "минус 10% за спецзадачу";
+      const netText = state.showNet ? `${formatRub(total * 0.87)} после НДФЛ` : "gross";
+      return `
+        <article class="month-card ${rowData.active ? "" : "is-off"}">
+          <div class="month-card-head">
+            <div>
+              <h3>${months[index]}</h3>
+              <div class="money">${formatRub(total)}</div>
+              <small>${netText}</small>
+            </div>
+            <span class="status-pill ${rowData.specialDone ? "" : "miss"}">${taskText}</span>
+          </div>
+
+          <div class="mini-facts">
+            <div class="mini-fact">
+              <span>База</span>
+              <strong>${formatRub(result.base)}</strong>
+            </div>
+            <div class="mini-fact">
+              <span>ВП факт / план</span>
+              <strong>${formatNumber(toNumber(rowData.factGp), 1)} / ${formatNumber(toNumber(rowData.planGp), 1)} млн</strong>
+            </div>
+            <div class="mini-fact">
+              <span>ПДЗ</span>
+              <strong>${formatNumber(toNumber(rowData.pdz), 1)} млн</strong>
+            </div>
+            <div class="mini-fact">
+              <span>СТМ</span>
+              <strong>${formatNumber(toNumber(rowData.stm), 2)}</strong>
+            </div>
+          </div>
+
+          <div class="kpi-strips">
+            ${strip("ВП", result.kPlan, "rose")}
+            ${strip("ПДЗ", result.kPdz, "green")}
+            ${strip("СТМ", result.kStm, "teal")}
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+}
+
+function strip(label, value, color) {
+  return `
+    <div class="strip">
+      <span>${label}</span>
+      <div class="strip-track"><div class="strip-fill ${color}" style="width: ${Math.max(0, Math.min(value, 1)) * 100}%"></div></div>
+      <strong>${formatPercent(value)}</strong>
+    </div>
+  `;
 }
 
 function renderDrag(activeResults) {
