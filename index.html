@@ -22,19 +22,24 @@
 
       <section class="summary-grid" aria-label="Итоги расчёта">
         <article class="metric-tile primary">
-          <span>К начислению</span>
+          <span id="salaryTotalLabel">ЗП на руки</span>
+          <strong id="salaryTotal">0 ₽</strong>
+          <small id="salaryTotalHint">с окладом и обедами</small>
+        </article>
+        <article class="metric-tile">
+          <span id="totalLabel">На руки</span>
           <strong id="totalGross">0 ₽</strong>
-          <small id="totalNet">0 ₽ после НДФЛ</small>
+          <small id="totalNet">премия</small>
+        </article>
+        <article class="metric-tile">
+          <span>Фикс. часть / мес</span>
+          <strong id="fixedMonthly">0 ₽</strong>
+          <small id="fixedMonthlyHint">оклад + обеды</small>
         </article>
         <article class="metric-tile">
           <span>Последний месяц</span>
           <strong id="lastMonthGross">0 ₽</strong>
           <small id="lastMonthName">—</small>
-        </article>
-        <article class="metric-tile">
-          <span>Квартальный пересчёт</span>
-          <strong id="quarterGross">0 ₽</strong>
-          <small>Платится отдельно</small>
         </article>
         <article class="metric-tile accent">
           <span>Главный стоп-фактор</span>
@@ -74,6 +79,28 @@
           <input id="showNet" type="checkbox" checked />
           <span>НДФЛ 13%</span>
         </label>
+      </section>
+
+      <section class="salary-panel" aria-label="Фиксированные выплаты">
+        <div class="kpi-title">Фиксированные выплаты</div>
+        <div class="salary-grid">
+          <div class="field">
+            <label for="baseSalary">Оклад, ₽</label>
+            <input id="baseSalary" type="text" inputmode="decimal" value="75000" />
+          </div>
+          <div class="field">
+            <label for="meals">Обеды, ₽</label>
+            <input id="meals" type="text" inputmode="decimal" value="11000" />
+          </div>
+          <label class="toggle-line">
+            <input id="salaryTaxed" type="checkbox" checked />
+            <span>НДФЛ с оклада</span>
+          </label>
+          <label class="toggle-line">
+            <input id="mealsTaxed" type="checkbox" />
+            <span>НДФЛ с обедов</span>
+          </label>
+        </div>
       </section>
 
       <section class="kpi-panel" aria-label="Планы KPI">
